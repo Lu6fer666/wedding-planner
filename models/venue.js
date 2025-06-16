@@ -1,50 +1,16 @@
-// Create venue model
-module.exports = function (sequelize, DataTypes) {
-  var Venue = sequelize.define('Venue', {
-    // Creating columns to store the required data in the venue table
-    // Added NAME data type
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must enter a venue name',
-        },
-      },
-    },
-    // Added Venue Photo
-    photo: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must enter photo URL',
-        },
-      },
-    },
-
-    // Added Address data type
-    address: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must enter full address',
-        },
-      },
-    },
-    // Added Venue website
+'use strict';
+module.exports = function (mongoose) {
+  const { Schema } = mongoose;
+  const VenueSchema = new Schema({
+    name: { type: String, required: [true, 'Must enter a venue name'] },
+    photo: { type: String, required: [true, 'Must enter photo URL'] },
+    address: { type: String, required: [true, 'Must enter full address'] },
     website: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: "Must enter link to venue's website",
-        },
-      },
+      type: String,
+      required: [true, "Must enter link to venue's website"],
+      match: [/^https?:\/\/.+/, 'Must enter a valid URL']
     },
+    wedding: { type: Schema.Types.ObjectId, ref: 'Wedding', required: true },
   });
-
-  // Venues model
-  return Venue;
+  return mongoose.model('Venue', VenueSchema);
 };

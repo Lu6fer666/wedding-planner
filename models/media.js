@@ -1,27 +1,14 @@
-module.exports = function (sequelize, DataTypes) {
-  var Media = sequelize.define('Media', {
-    mediaType: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must enter the media type',
-        },
-      },
-    },
+'use strict';
+module.exports = function (mongoose) {
+  const { Schema } = mongoose;
+  const MediaSchema = new Schema({
+    mediaType: { type: String, required: [true, 'Must enter the media type'] },
     url: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        isUrl: {
-          msg: 'must to enter a valid Url',
-        },
-        notNull: {
-          msg: 'Must enter a media type',
-        },
-      },
+      type: String,
+      required: [true, 'Must enter media URL'],
+      match: [/^https?:\/\/.+/, 'Must enter a valid URL']
     },
+    wedding: { type: Schema.Types.ObjectId, ref: 'Wedding', required: true },
   });
-
-  return Media;
+  return mongoose.model('Media', MediaSchema);
 };

@@ -1,49 +1,16 @@
-module.exports = function (sequelize, DataTypes) {
-  var Guest = sequelize.define('Guest', {
-    // Adds NAME data type
-    name: {
-      // Name type STRING
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must  enter guest name',
-        },
-      },
-    },
-    // Adds EMAIL data type
+'use strict';
+module.exports = function (mongoose) {
+  const { Schema } = mongoose;
+  const GuestSchema = new Schema({
+    name: { type: String, required: [true, 'Must enter guest name'] },
     email: {
-      // Email type STRING
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must to enter quest email',
-        },
-      },
+      type: String,
+      required: [true, 'Must enter guest email'],
+      match: [/.+@.+\..+/, 'Please enter a valid email format: example@gmail.com']
     },
-    // Adds phone data type
-    phone: {
-      // Phone type STRING
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'Must to enter quest phone number',
-        },
-      },
-    },
+    phone: { type: String, required: [true, 'Must enter guest phone number'] },
+    invitation: { type: Schema.Types.ObjectId, ref: 'Invitation' },
+    wedding: { type: Schema.Types.ObjectId, ref: 'Wedding', required: true },
   });
-
-  Guest.associate = function (models) {
-    // Associating Guest with Invitation
-    // When an Guest is deleted,they are also deleted from the invitation table
-    Guest.hasOne(models.Invitation, {
-      onDelete: 'cascade',
-    });
-
-    models.Invitation.belongsTo(Guest);
-  };
-
-  return Guest;
+  return mongoose.model('Guest', GuestSchema);
 };
